@@ -75,39 +75,6 @@ class App extends React.Component {
   };
 
   render() {
-    const temporaryArticles = [
-      {
-        title: "First article",
-        paragraphs: [
-          "This is a sentence. And a second sentence",
-          "This is a start of a new paragraph"
-        ],
-        words: [
-          "this",
-          "is",
-          "a",
-          "sentence",
-          "and",
-          "a",
-          "second",
-          "sentence",
-          "this",
-          "is",
-          "a",
-          "start",
-          "of",
-          "a",
-          "new",
-          "paragraph"
-        ]
-      },
-      {
-        title: "Second article",
-        paragraphs: ["Just one paragraph"],
-        words: ["just", "one", "paragraph"]
-      }
-    ];
-
     const titles = _.chain(data)
       .map((value, key) => key)
       .map(value => _.lowerCase(value))
@@ -146,7 +113,6 @@ class App extends React.Component {
       .map(([title, paragraphs, words]) => (
         { title, paragraphs, words }
       ))
-      .tap(console.log)
       .value()
     const currentArticle = articles[this.state.articleIndex];
     return (
@@ -162,6 +128,7 @@ class App extends React.Component {
         />
         <h1>Unique words</h1>
         <UniqueWords words={currentArticle.words} />
+        <WordCount words={currentArticle.words} />
       </>
     );
   }
@@ -197,6 +164,33 @@ function UniqueWords({ words }) {
       ))}
     </ul>
   );
+}
+function WordCount({ words }) {
+  const countedWords = _.countBy(words)
+  const sortedCountedWords = _(countedWords)
+    .toPairs()
+    .orderBy(1, 'desc')
+    .value()
+  return (
+    <>
+      <h1>Word Count</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Word</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedCountedWords.map(item => (
+            <tr>
+              <td>{item[0]}</td>
+              <td>{item[1]}</td>
+            </tr>))}
+        </tbody>
+      </table>
+    </>
+  )
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
